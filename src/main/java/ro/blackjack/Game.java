@@ -24,6 +24,7 @@ public class Game {
 
     private int dealerScore;
     private int playerScore;
+    private PlayerType winner;
 
     public static void main(String[] args) {
 
@@ -39,6 +40,7 @@ public class Game {
         createCardsPack();
         shufflePack();
         initFirstRound();
+        isPlayerTurn = true;
     }
 
     /**
@@ -53,7 +55,6 @@ public class Game {
         if (gameOver) return;
 
         try (Scanner scanner = new Scanner(System.in)) {
-            isPlayerTurn = true;
 
             while (isPlayerTurn && !gameOver) {
                 String command = scanner.nextLine();
@@ -127,7 +128,8 @@ public class Game {
     /**
      * Search of a winner
      */
-    private void decideWinner() {
+    public void decideWinner() {
+        turnDealerCard();
         if (playerScore > dealerScore) {
             declarePlayerVictory();
         } else if (dealerScore > playerScore) {
@@ -154,6 +156,9 @@ public class Game {
         }
 
         gameOver = checkScores();
+        if (gameOver) {
+            turnDealerCard();
+        }
         return gameOver;
     }
 
@@ -230,24 +235,25 @@ public class Game {
         return false;
     }
 
-    private void turnDealerCardAndShow() {
+    private void turnDealerCard() {
         dealerCards.get(0).setFaceDown(false);
-        showCardsOnTable();
     }
 
     private void declareTie() {
-        turnDealerCardAndShow();
+        showCardsOnTable();
         printScores();
         out.println("\nIt's a tie!");
     }
     private void declarePlayerVictory() {
-        turnDealerCardAndShow();
+        showCardsOnTable();
         printScores();
+        winner = PLAYER;
         out.println("\nYou won!");
     }
     private void declarePlayerDefeat() {
-        turnDealerCardAndShow();
+        showCardsOnTable();
         printScores();
+        winner = DEALER;
         out.println("\nYou lost! Game Over!");
     }
 
@@ -390,7 +396,7 @@ public class Game {
                     sum += card.getValue();
                 }
             }
-            if (sum > maxSum) maxSum = sum;
+            if (sum > maxSum && sum <= GOAL) maxSum = sum;
         }
         return maxSum;
     }
@@ -438,5 +444,9 @@ public class Game {
 
     public int getPlayerScore() {
         return playerScore;
+    }
+
+    public PlayerType getWinner() {
+        return winner;
     }
 }
