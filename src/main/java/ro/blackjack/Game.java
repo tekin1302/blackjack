@@ -95,7 +95,7 @@ public class Game {
         int totalNrOfCards = playerCards.size() + dealerCards.size();
 
         if (dealerScore < playerScore) {
-            // if already ahead, don't risk it
+            // dealer has less points; has to risk it
             return true;
         } else if (dealerScore > playerScore) {
             // winning, no need for a hit
@@ -273,9 +273,8 @@ public class Game {
             }
         }
 
-        while (sum > GOAL && nrOfAces > 0) {
-            sum -= 10;
-            nrOfAces--;
+        if (sum > GOAL && nrOfAces > 0) {
+            sum = getMaxScoreWithAces(cards, nrOfAces);
         }
 
         if (playerType == PLAYER) {
@@ -362,6 +361,58 @@ public class Game {
         return cardsPack;
     }
 
+    /**
+     * Calculates the max possible score for a hand that has aces
+     * @param cards The cards
+     * @param nrOfAces The number of aces
+     * @return The max possible score for a hand that has aces
+     */
+    private int getMaxScoreWithAces(List<Card> cards, int nrOfAces) {
+        List<boolean[]> acesCombinations = possibleAcesCombination(nrOfAces);
+
+        int maxSum = 0;
+
+        // try all combination of aces values (1 or 11)
+        for (boolean[] acesCombination : acesCombinations) {
+
+            int sum = 0;
+            for (Card card : cards) {
+
+                int aceIdx = 0;
+                if (card.isAce()) {
+                    // consult the boolean array to check which value should be added
+                    sum += acesCombination[aceIdx] ?  11 : 1;
+                    aceIdx++;
+                } else {
+                    sum += card.getValue();
+                }
+            }
+            if (sum > maxSum) maxSum = sum;
+        }
+        return maxSum;
+    }
+
+    /**
+     * Returns a list of boolean arrays that represent all the possible combinations of n booleans
+     * @param n
+     * @return
+     */
+    private List<boolean[]> possibleAcesCombination(int n) {
+        List<boolean[]> result = new ArrayList<>();
+
+        for (int i = 0; i < Math.pow(2, n); i++) {
+            String bin = Integer.toBinaryString(i);
+            while (bin.length() < n)
+                bin = "0" + bin;
+            char[] chars = bin.toCharArray();
+            boolean[] boolArray = new boolean[n];
+            for (int j = 0; j < chars.length; j++) {
+                boolArray[j] = chars[j] == '0' ? true : false;
+            }
+            result.add(boolArray);
+        }
+        return result;
+    }
     public List<Card> getCardsPack() {
         return cardsPack;
     }
