@@ -12,10 +12,10 @@ import static ro.blackjack.PlayerType.PLAYER;
  */
 public class Game {
 
-    private static final String[] SUITS = new String[] {HEARTS, SPADES, CLUBS, DIAMONDS};
+    public static final CardSymbols[] SUITS = new CardSymbols[] {HEARTS, SPADES, CLUBS, DIAMONDS};
 
-    private static final int GOAL = 21;
-    private static final int DEALER_HIT_THRESHOLD = 17;
+    public static final int GOAL = 21;
+    public static final int DEALER_HIT_THRESHOLD = 17;
 
     private List<Card> cardsPack;
     private List<Card> playerCards;
@@ -35,7 +35,7 @@ public class Game {
     /**
      * Initialize the game data
      */
-    private void init() {
+    public void init() {
         createCardsPack();
         shufflePack();
         initFirstRound();
@@ -345,20 +345,44 @@ public class Game {
 
         // for each suite
         for (int i = 0; i < SUITS.length; i++) {
+            CardSymbols suit = SUITS[i];
 
             // add cards with face value
             for (int j = 2; j < 11; j++) {
-                cardsPack.add(new Card(j, j + SUITS[i], false));
+                cardsPack.add(new Card(j, j + suit.getIcon(), j + "_" + suit.getCode(), false));
             }
 
             // add J, Q, K, A
-            cardsPack.add(new Card(10, "J" + SUITS[i], false));
-            cardsPack.add(new Card(10, "Q" + SUITS[i], false));
-            cardsPack.add(new Card(10, "K" + SUITS[i], false));
-            cardsPack.add(new Card(11, "A" + SUITS[i], true));
+            cardsPack.add(new Card(10, "J" + suit.getIcon(), "J_" + suit.getCode(), false));
+            cardsPack.add(new Card(10, "Q" + suit.getIcon(), "Q_" + suit.getCode(), false));
+            cardsPack.add(new Card(10, "K" + suit.getIcon(), "K_" + suit.getCode(), false));
+            cardsPack.add(new Card(11, "A" + suit.getIcon(), "A_" + suit.getCode(), true));
         }
 
         return cardsPack;
     }
 
+    public List<Card> getCardsPack() {
+        return cardsPack;
+    }
+
+    public List<Card> getPlayerCards() {
+        return playerCards;
+    }
+
+    public List<Card> getDealerCards() {
+        return dealerCards;
+    }
+
+    public boolean isPlayerTurn() {
+        return isPlayerTurn;
+    }
+
+    public int getDealerScore() {
+        return dealerScore;
+    }
+
+    public int getPlayerScore() {
+        return playerScore;
+    }
 }

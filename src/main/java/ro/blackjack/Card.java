@@ -13,13 +13,15 @@ public class Card {
 
     private boolean faceDown;
     private boolean isAce;
+    private String code;
 
     public Card() {
     }
 
-    public Card(int value, String label, boolean isAce) {
+    public Card(int value, String label, String code, boolean isAce) {
         this.value = value;
         this.label = label;
+        this.code = code;
         this.isAce = isAce;
     }
 
@@ -55,8 +57,16 @@ public class Card {
         isAce = ace;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
     @Override
     public String toString() {
-        return isFaceDown() ? CardSymbols.FACE_DOWN : label;
+        return isFaceDown() ? CardSymbols.FACE_DOWN.getIcon() : label;
     }
 }
