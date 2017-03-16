@@ -67,6 +67,10 @@ public class Game {
         }
 
         // it's the dealers turn
+        makeDealerMoves(gameOver);
+    }
+
+    public void makeDealerMoves(boolean gameOver) {
         while (!gameOver) {
             boolean hitSuccess = false;
 
@@ -83,7 +87,6 @@ public class Game {
                 decideWinner();
             }
         }
-
     }
 
     /**
@@ -139,7 +142,7 @@ public class Game {
      * @param firstRound If this is true, then the scores for both players are calculated
      * @return true if the game is over, false otherwise
      */
-    private boolean isGameOver(boolean firstRound) {
+    public boolean isGameOver(boolean firstRound) {
         boolean gameOver;
         if (firstRound) {
             calculateScore(PLAYER);
@@ -179,7 +182,7 @@ public class Game {
     /**
      * Marks the moment when the user gives up his turn
      */
-    private void finishUserTurn() {
+    public void finishUserTurn() {
         isPlayerTurn = false;
         out.println("It's the dealers turn");
     }
@@ -187,7 +190,7 @@ public class Game {
     /**
      * Receive a card from the pack
      */
-    private void hitMe() {
+    public void hitMe() {
         List<Card> cards = isPlayerTurn ? playerCards : dealerCards;
         cards.add(cardsPack.remove(cardsPack.size() - 1));
     }
