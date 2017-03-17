@@ -240,17 +240,20 @@ public class Game {
     }
 
     private void declareTie() {
+        turnDealerCard();
         showCardsOnTable();
         printScores();
         out.println("\nIt's a tie!");
     }
     private void declarePlayerVictory() {
+        turnDealerCard();
         showCardsOnTable();
         printScores();
         winner = PLAYER;
         out.println("\nYou won!");
     }
     private void declarePlayerDefeat() {
+        turnDealerCard();
         showCardsOnTable();
         printScores();
         winner = DEALER;
