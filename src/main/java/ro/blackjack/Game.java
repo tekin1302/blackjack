@@ -17,7 +17,7 @@ public class Game {
     public static final int GOAL = 21;
     public static final int DEALER_HIT_THRESHOLD = 17;
 
-    private List<Card> cardsPack;
+    private Queue<Card> cardsPack;
     private List<Card> playerCards;
     private List<Card> dealerCards;
     private boolean isPlayerTurn;
@@ -38,7 +38,6 @@ public class Game {
      */
     public void init() {
         createCardsPack();
-        shufflePack();
         initFirstRound();
         isPlayerTurn = true;
     }
@@ -197,7 +196,7 @@ public class Game {
      */
     public void hitMe() {
         List<Card> cards = isPlayerTurn ? playerCards : dealerCards;
-        cards.add(cardsPack.remove(cardsPack.size() - 1));
+        cards.add(cardsPack.poll());
     }
 
     /**
@@ -333,28 +332,28 @@ public class Game {
         playerCards = new ArrayList<>();
         dealerCards = new ArrayList<>();
 
-        playerCards.add(cardsPack.remove(cardsPack.size() - 1));
-        playerCards.add(cardsPack.remove(cardsPack.size() - 1));
+        playerCards.add(cardsPack.remove());
+        playerCards.add(cardsPack.remove());
 
-        dealerCards.add(cardsPack.remove(cardsPack.size() - 1));
-        dealerCards.add(cardsPack.remove(cardsPack.size() - 1));
+        dealerCards.add(cardsPack.remove());
+        dealerCards.add(cardsPack.remove());
         dealerCards.get(0).setFaceDown(true);
     }
 
     /**
      * Randomly changes the order of the cards in the pack
      */
-    private void shufflePack() {
+    private void shufflePack(List<Card> pack) {
         long seed = System.nanoTime();
-        Collections.shuffle(cardsPack, new Random(seed));
+        Collections.shuffle(pack, new Random(seed));
     }
 
     /**
      * Creates a list of cards
      * @return The list of cards
      */
-    private List<Card> createCardsPack() {
-        cardsPack = new ArrayList<>();
+    private Queue<Card> createCardsPack() {
+        List<Card> allCards = new ArrayList<>();
 
         // for each suite
         for (int i = 0; i < SUITS.length; i++) {
@@ -362,20 +361,21 @@ public class Game {
 
             // add cards with face value
             for (int j = 2; j < 11; j++) {
-                cardsPack.add(new Card(j, j + suit.getIcon(), j + "_" + suit.getCode(), false));
+                allCards.add(new Card(j, j + suit.getIcon(), j + "_" + suit.getCode(), false));
             }
 
             // add J, Q, K, A
-            cardsPack.add(new Card(10, "J" + suit.getIcon(), "J_" + suit.getCode(), false));
-            cardsPack.add(new Card(10, "Q" + suit.getIcon(), "Q_" + suit.getCode(), false));
-            cardsPack.add(new Card(10, "K" + suit.getIcon(), "K_" + suit.getCode(), false));
-            cardsPack.add(new Card(11, "A" + suit.getIcon(), "A_" + suit.getCode(), true));
+            allCards.add(new Card(10, "J" + suit.getIcon(), "J_" + suit.getCode(), false));
+            allCards.add(new Card(10, "Q" + suit.getIcon(), "Q_" + suit.getCode(), false));
+            allCards.add(new Card(10, "K" + suit.getIcon(), "K_" + suit.getCode(), false));
+            allCards.add(new Card(11, "A" + suit.getIcon(), "A_" + suit.getCode(), true));
         }
-
+        shufflePack(allCards);
+        cardsPack = new ArrayDeque<>(allCards);
         return cardsPack;
     }
 
-    public List<Card> getCardsPack() {
+    public Queue<Card> getCardsPack() {
         return cardsPack;
     }
 
